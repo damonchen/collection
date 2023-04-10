@@ -1,2 +1,3 @@
 # collection
-golang collection implemetion
+golang collection impl
+
