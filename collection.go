@@ -54,6 +54,22 @@ func (i *SliceIterator[T]) Value() T {
 	return i.value
 }
 
+// Index slice index
+func Index[T comparable](iter Iterator[T], val T) int {
+  for i:=0; iter.Next(); i++ {
+    v := iter.Value()
+    if v == val {
+      return i
+    }
+  }
+  return -1
+}
+
+func Contain[T comparable](iter Iterator[T], val T) bool {
+  return Index(iter, val) != -1
+}
+
+
 type mapIterator[T any, V any] struct {
 	source Iterator[T]
 	mapper func(T) V
@@ -135,3 +151,5 @@ func ToMap[T comparable, V any](iter Iterator[V], f Mapper[T, V]) map[T]V {
 	}
 	return r
 }
+
+
