@@ -1,5 +1,7 @@
 package collection
 
+import "math/rand"
+
 type Integer interface {
 	~int | ~uint | ~uint8 | ~int8 | ~int16 | ~uint16 | ~int32 | ~uint32 | ~int64 | ~uint64
 }
@@ -54,21 +56,59 @@ func (i *SliceIterator[T]) Value() T {
 	return i.value
 }
 
+// Slice slice
+func Slice[T any](iter Iterator[T], start, end int) Iterator[T] {
+	for i := 0; i < start; i++ {
+		iter.Next()
+	}
+
+	var slice []T
+	for i := start; i < end; i++ {
+		if iter.Next() {
+			slice = append(slice, iter.Value())
+		}
+	}
+
+	return NewSliceIterator(slice)
+}
+
+// Shuffle shuffle
+func Shuffle[T any](iter Iterator[T]) Iterator[T] {
+	slice := Collect(iter)
+	length := len(slice)
+	for i := 0; i < length; i++ {
+		index := rand.Int() % length
+
+		first := slice[0]
+		slice[0] = slice[index]
+		slice[index] = first
+	}
+
+	return NewSliceIterator(slice)
+}
+
+func Choice[T any](iter Iterator[T]) T {
+	c := Collect(iter)
+	length := len(c)
+	i := rand.Int() % length
+	return c[i]
+}
+
 // Index slice index
 func Index[T comparable](iter Iterator[T], val T) int {
-  for i:=0; iter.Next(); i++ {
-    v := iter.Value()
-    if v == val {
-      return i
-    }
-  }
-  return -1
+	for i := 0; iter.Next(); i++ {
+		v := iter.Value()
+		if v == val {
+			return i
+		}
+	}
+	return -1
 }
 
+// Contain contain
 func Contain[T comparable](iter Iterator[T], val T) bool {
-  return Index(iter, val) != -1
+	return Index(iter, val) != -1
 }
-
 
 type mapIterator[T any, V any] struct {
 	source Iterator[T]
@@ -151,5 +191,3 @@ func ToMap[T comparable, V any](iter Iterator[V], f Mapper[T, V]) map[T]V {
 	}
 	return r
 }
-
-

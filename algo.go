@@ -128,3 +128,21 @@ func GroupBy[T any, V comparable](iter Iterator[T], keyFn Key[T, V]) map[V][]T {
 	}
 	return group
 }
+
+// Keys keys
+func Keys[T any](object map[string]T) []string {
+	var r []string
+	for key := range object {
+		r = append(r, key)
+	}
+	return r
+}
+
+// Values values
+func Values[T any](object map[string]T) []T {
+	var r []T
+	for _, v := range object {
+		r = append(r, v)
+	}
+	return r
+}
