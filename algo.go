@@ -118,7 +118,7 @@ func Repeat[T any](ele T, times int) (chan T, Close) {
 type Key[T any, V comparable] func(T any) V
 
 // GroupBy group by
-func GroupBy[T any, V comparable](iter Iterator[T], keyFn Key[T, V]) map[V][]T {
+func GroupBy[T any, V comparable](iter Iterator[T], keyFn func(t T) V) map[V][]T {
 	group := map[V][]T{}
 	for iter.Next() {
 		v := iter.Value()
